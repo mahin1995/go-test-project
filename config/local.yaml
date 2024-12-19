@@ -1,0 +1,4 @@
+env: "dev"
+storage_path: "storage/stoarge.db"
+http_server:
+  address: "localhost:8002"

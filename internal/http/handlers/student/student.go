@@ -1,0 +1,7 @@
+package student
+
+
+
+func New(){
+	
+}
