@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/mahin19/students-api/internal/config"
+	"github.com/mahin19/students-api/internal/http/handlers/student"
+	"github.com/mahin19/students-api/internal/storage/sqlite"
 )
 
 func main() {
@@ -28,12 +30,17 @@ func main() {
 	//load config
 	cfg := config.MustLoad()
 	//database setup
+	storage, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	slog.Info("storage intiialize", slog.String("env", cfg.Env), slog.String("version", "1.00.00"))
 	//setup router
 	router := http.NewServeMux()
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome to studen api"))
-		time.Sleep(10 * time.Second)
-	})
+	router.HandleFunc("POST /api/student", student.New(storage))
+	router.HandleFunc("GET /api/student/{id}", student.GetById(storage))
+	router.HandleFunc("GET /api/student", student.GetAll(storage))
+	router.HandleFunc("PATCH /api/student", student.UpdateById(storage))
 	//setup server
 	server := http.Server{
 		Addr:    cfg.Addr,
