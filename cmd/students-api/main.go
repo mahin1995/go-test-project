@@ -13,6 +13,7 @@ import (
 
 	"github.com/mahin19/students-api/internal/config"
 	"github.com/mahin19/students-api/internal/http/handlers/student"
+	"github.com/mahin19/students-api/internal/page"
 	"github.com/mahin19/students-api/internal/storage/sqlite"
 )
 
@@ -37,6 +38,9 @@ func main() {
 	slog.Info("storage intiialize", slog.String("env", cfg.Env), slog.String("version", "1.00.00"))
 	//setup router
 	router := http.NewServeMux()
+	router.HandleFunc("/", page.HomeHandler(storage))
+	router.HandleFunc("/add", page.FormHandler)
+	router.HandleFunc("/submit", page.SubmitHandler(storage))
 	router.HandleFunc("POST /api/student", student.New(storage))
 	router.HandleFunc("GET /api/student/{id}", student.GetById(storage))
 	router.HandleFunc("GET /api/student", student.GetAll(storage))
@@ -47,7 +51,7 @@ func main() {
 		Handler: router,
 	}
 
-	slog.Info("server start on ", slog.String("address", cfg.Addr))
+	slog.Info("server start on ", slog.String("address", "http://"+cfg.Addr))
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go func() {

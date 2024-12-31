@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+</head>
+<body>
+    <a href="/add">Add student</a>
+    <h1>{{ .Title }}</h1>
+    {{ if .Error }}
+    <p style="color: red;">Error: {{ .Error }}</p>
+    {{ else }}
+    <p>{{ .Message }}</p>
+    <h2>Student List:</h2>
+    <ul>
+        {{ range .Students }}
+        <li>{{ .Name }} - {{ .Age }} years old ||  {{ .Email }}  <form method="POST" action="/delete">
+            <input type="hidden" name="id" value="{{.Id}}">
+            <button type="submit">Delete</button>
+        </form></li>
+        {{ end }}
+    </ul>
+    {{ end }}
+</body>
+</html>

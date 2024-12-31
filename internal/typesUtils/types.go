@@ -6,3 +6,10 @@ type Student struct {
 	Email string `json:"email" validate:"required"`
 	Age   int    `json:"age" validate:"required"`
 }
+
+type PageData struct {
+	Title    string
+	Message  string
+	Error    string
+	Students []Student
+}
